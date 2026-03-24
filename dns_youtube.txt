@@ -4,3 +4,9 @@ ytimg.com
 ggpht.com
 youtu.be
 youtube-nocookie.com
+googlevideo.com
+youtube.com
+ytimg.com
+openai.com
+chat.openai.com
+oaistatic.com
