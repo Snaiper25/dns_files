@@ -1,5 +1,4 @@
 # auto-generated
-/ip dns static
 
 /ip dns static remove [find where comment="github:gpt"]
 /ip dns static add name=chatgpt.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
@@ -28,6 +27,6 @@
 
 /ip dns static remove [find where comment="github:gpt-regex"]
 /ip dns static remove [find where comment="github:youtube-regex"]
-/ip dns static add regexp="(^|.*\.)googlevideo\.com$" type=FWD address-list=to-mihomo-youtube comment="github:youtube-regex"
-/ip dns static add regexp="(^|.*\.)oaistatic\.com$" type=FWD address-list=to-mihomo-gpt comment="github:gpt-regex"
+/ip dns static add regexp="(^|.*\\.)googlevideo\\.com$" type=FWD address-list=to-mihomo-youtube comment="github:youtube-regex"
+/ip dns static add regexp="(^|.*\\.)oaistatic\\.com$" type=FWD address-list=to-mihomo-gpt comment="github:gpt-regex"
 
