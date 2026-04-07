@@ -31,7 +31,7 @@ def build_normal_group(filename, comment, address_list):
     lines = [f'/ip dns static remove [find where comment="{comment}"]']
     for d in domains:
         lines.append(
-            f'add name={d} type=FWD match-subdomain=yes '
+            f'/ip dns static add name={d} type=FWD match-subdomain=yes '
             f'address-list={address_list} comment="{comment}"'
         )
     lines.append("")
@@ -60,7 +60,7 @@ def build_regex_group():
 
     for comment, address_list, pattern in regex_entries:
         lines.append(
-            f'add regexp="{pattern}" type=FWD '
+            f'/ip dns static add regexp="{pattern}" type=FWD '
             f'address-list={address_list} comment="{comment}"'
         )
 
