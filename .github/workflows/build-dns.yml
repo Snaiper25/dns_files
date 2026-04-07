@@ -3,7 +3,8 @@ name: Build MikroTik DNS script
 on:
   push:
     paths:
-      - '*.txt'
+      - 'domains/**'
+      - 'scripts/generate_dns.py'
       - '.github/workflows/build-dns.yml'
   workflow_dispatch:
 
@@ -15,25 +16,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Generate dns-auto.rsc
+        run: python scripts/generate_dns.py
+
+      - name: Commit generated file
         run: |
-          echo "# Auto-generated file" > dns-auto.rsc
-          echo "/ip dns static" >> dns-auto.rsc
-          echo "" >> dns-auto.rsc
-
-          # GPT
-          echo "/ip dns static remove [find where comment=\"github:gpt\"]" >> dns-auto.rsc
-          while read line; do
-            if [ ! -z "$line" ]; then
-              echo "add name=$line type=FWD match-subdomain=yes address-list=to-mihomo comment=\"github:gpt\"" >> dns-auto.rsc
-            fi
-          done < gpt.txt
-          echo "" >> dns-auto.rsc
-
-          # YouTube
-          echo "/ip dns static remove [find where comment=\"github:youtube\"]" >> dns-auto.rsc
-          while read line; do
-            if [ ! -z "$line
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/dns-auto.rsc
+          git diff --cached --quiet || git commit -m "Auto-generate dns-auto.rsc"
+          git push
