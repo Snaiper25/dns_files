@@ -1,6 +1,7 @@
 from pathlib import Path
 
 BASE = Path(".")
+DOMAINS_DIR = BASE / "domains"
 OUT = BASE / "generated" / "dns-auto.rsc"
 
 GROUPS = [
@@ -10,7 +11,7 @@ GROUPS = [
     ("whatsapp.txt", "github:whatsapp", "to-mihomo-whatsapp"),
 ]
 
-REGEX_FILE = BASE / "regex.txt"
+REGEX_FILE = DOMAINS_DIR / "regex.txt"
 
 
 def read_lines(path: Path):
@@ -26,7 +27,7 @@ def read_lines(path: Path):
 
 
 def build_normal_group(filename, comment, address_list):
-    domains = read_lines(BASE / filename)
+    domains = read_lines(DOMAINS_DIR / filename)
     lines = [f'/ip dns static remove [find where comment="{comment}"]']
     for d in domains:
         lines.append(
