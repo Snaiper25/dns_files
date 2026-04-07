@@ -16,3 +16,7 @@ add name=youtube-nocookie.com type=FWD match-subdomain=yes address-list=to-mihom
 add name=youtube.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 add name=ytimg.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 
+/ip dns static remove [find where comment="github:telegram"]
+
+/ip dns static remove [find where comment="github:whatsapp"]
+
