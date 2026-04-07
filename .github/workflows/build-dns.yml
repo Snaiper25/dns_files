@@ -1,0 +1,39 @@
+name: Build MikroTik DNS script
+
+on:
+  push:
+    paths:
+      - '*.txt'
+      - '.github/workflows/build-dns.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate dns-auto.rsc
+        run: |
+          echo "# Auto-generated file" > dns-auto.rsc
+          echo "/ip dns static" >> dns-auto.rsc
+          echo "" >> dns-auto.rsc
+
+          # GPT
+          echo "/ip dns static remove [find where comment=\"github:gpt\"]" >> dns-auto.rsc
+          while read line; do
+            if [ ! -z "$line" ]; then
+              echo "add name=$line type=FWD match-subdomain=yes address-list=to-mihomo comment=\"github:gpt\"" >> dns-auto.rsc
+            fi
+          done < gpt.txt
+          echo "" >> dns-auto.rsc
+
+          # YouTube
+          echo "/ip dns static remove [find where comment=\"github:youtube\"]" >> dns-auto.rsc
+          while read line; do
+            if [ ! -z "$line
