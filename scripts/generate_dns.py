@@ -6,6 +6,8 @@ OUT = BASE / "generated" / "dns-auto.rsc"
 GROUPS = [
     ("gpt.txt", "github:gpt", "to-mihomo-gpt"),
     ("youtube.txt", "github:youtube", "to-mihomo-youtube"),
+    ("telegram.txt", "github:telegram", "to-mihomo-telegram"),
+    ("whatsapp.txt", "github:whatsapp", "to-mihomo-whatsapp"),
 ]
 
 REGEX_FILE = BASE / "regex.txt"
