@@ -59,9 +59,9 @@ def build_regex_group():
         lines.append(f'/ip dns static remove [find where comment="{comment}"]')
 
     for comment, address_list, pattern in regex_entries:
-             
+        safe_pattern = pattern.replace("\\", "\\\\").replace('"', '\\"')
         lines.append(
-            f'/ip dns static add regexp="{pattern}" type=FWD '
+            f'/ip dns static add regexp="{safe_pattern}" type=FWD '
             f'address-list={address_list} comment="{comment}"'
         )
 
@@ -76,7 +76,6 @@ def main():
 
     lines = [
         "# auto-generated",
-        "/ip dns static",
         "",
     ]
 
