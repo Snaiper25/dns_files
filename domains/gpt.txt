@@ -3,3 +3,5 @@ openai.com
 oaiusercontent.com
 oaistatic.com
 sendgrid.net
+pythonhosted.org
+pypi.org
