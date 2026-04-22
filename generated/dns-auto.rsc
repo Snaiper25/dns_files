@@ -5,6 +5,8 @@
 /ip dns static add name=oaistatic.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=oaiusercontent.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=openai.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
+/ip dns static add name=pypi.org type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
+/ip dns static add name=pythonhosted.org type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=sendgrid.net type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 
 /ip dns static remove [find where comment="github:youtube"]
