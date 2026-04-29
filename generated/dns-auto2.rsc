@@ -28,10 +28,22 @@
 /ip dns static add name=x.com type=FWD match-subdomain=yes address-list=to_mihomo_social comment="github:social"
 
 /ip dns static remove [find where comment="github:telegram"]
+/ip dns static add name=cdn-telegram.org type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=comments.app type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=contest.com type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=fragment.com type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=getgems.io type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=quiz.directory type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
 /ip dns static add name=t.me type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
 /ip dns static add name=tdesktop.com type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
 /ip dns static add name=telegra.ph type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=telegram-cdn.org type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=telegram.me type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
 /ip dns static add name=telegram.org type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=telegram.space type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=ton.org type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=tonkeeper.com type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
+/ip dns static add name=wallet.tg type=FWD match-subdomain=yes address-list=to_mihomo_telegram comment="github:telegram"
 
 /ip dns static remove [find where comment="github:vpn"]
 /ip dns static add name=docker.com type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
