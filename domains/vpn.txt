@@ -6,3 +6,4 @@ docker.com
 docker.io
 openvpn.net
 intel.com
+intel2.com
