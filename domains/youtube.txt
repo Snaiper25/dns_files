@@ -15,3 +15,9 @@ twitch.tv
 ttvnw.net
 disneyplus.com
 dssott.com
+spotify.com
+spotifycdn.com
+scdn.co
+soundcloud.com
+music.apple.com
+mzstatic.com
