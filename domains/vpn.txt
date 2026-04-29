@@ -1,1 +1,7 @@
 signal.org
+github.com
+githubusercontent.com
+githubassets.com
+docker.com
+docker.io
+openvpn.net
