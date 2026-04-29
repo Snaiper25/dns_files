@@ -8,3 +8,7 @@ google-analytics.com
 lh3.googleusercontent.com
 google-analytics.com
 googleusercontent.com
+anthropic.com
+claude.ai
+poe.com
+perplexity.ai
