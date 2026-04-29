@@ -4,8 +4,6 @@ oaistatic.com
 oaiusercontent.com
 auth0.openai.com
 googleusercontent.com
-gstatic.com
-googleapis.com
 google-analytics.com
 lh3.googleusercontent.com
 google-analytics.com
