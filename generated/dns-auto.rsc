@@ -1,14 +1,18 @@
 # auto-generated
 
 /ip dns static remove [find where comment="github:gpt"]
+/ip dns static add name=anthropic.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=auth0.openai.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=chatgpt.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
+/ip dns static add name=claude.ai type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=google-analytics.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=googleusercontent.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=lh3.googleusercontent.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=oaistatic.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=oaiusercontent.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 /ip dns static add name=openai.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
+/ip dns static add name=perplexity.ai type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
+/ip dns static add name=poe.com type=FWD match-subdomain=yes address-list=to-mihomo-gpt comment="github:gpt"
 
 /ip dns static remove [find where comment="github:youtube"]
 /ip dns static add name=ggpht.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
