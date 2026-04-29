@@ -1,7 +1,12 @@
 chatgpt.com
 openai.com
-oaiusercontent.com
 oaistatic.com
-sendgrid.net
-pythonhosted.org
-pypi.org
+oaiusercontent.com
+auth0.openai.com
+googleusercontent.com
+gstatic.com
+googleapis.com
+google-analytics.com
+lh3.googleusercontent.com
+google-analytics.com
+googleusercontent.com
