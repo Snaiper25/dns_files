@@ -14,7 +14,10 @@
 
 /ip dns static remove [find where comment="github:youtube"]
 /ip dns static add name=ggpht.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
+/ip dns static add name=googleusercontent.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 /ip dns static add name=googlevideo.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
+/ip dns static add name=gvt1.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
+/ip dns static add name=gvt2.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 /ip dns static add name=youtu.be type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 /ip dns static add name=youtube-nocookie.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
 /ip dns static add name=youtube.com type=FWD match-subdomain=yes address-list=to-mihomo-youtube comment="github:youtube"
