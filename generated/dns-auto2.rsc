@@ -40,6 +40,7 @@
 /ip dns static add name=githubassets.com type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
 /ip dns static add name=githubusercontent.com type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
 /ip dns static add name=intel.com type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
+/ip dns static add name=intel2.com type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
 /ip dns static add name=openvpn.net type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
 /ip dns static add name=signal.org type=FWD match-subdomain=yes address-list=to_mihomo_vpn comment="github:vpn"
 
