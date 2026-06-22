@@ -85,8 +85,3 @@
 /ip dns static add name=youtube.com type=FWD match-subdomain=yes address-list=to_mihomo_youtube comment="github:youtube"
 /ip dns static add name=ytimg.com type=FWD match-subdomain=yes address-list=to_mihomo_youtube comment="github:youtube"
 
-/ip dns static remove [find where comment="github:gpt-regex"]
-/ip dns static remove [find where comment="github:youtube-regex"]
-/ip dns static add regexp="(^|.*\\.)googlevideo\\.com$" type=FWD address-list=to-mihomo-youtube comment="github:youtube-regex"
-/ip dns static add regexp="(^|.*\\.)oaistatic\\.com$" type=FWD address-list=to-mihomo-gpt comment="github:gpt-regex"
-
