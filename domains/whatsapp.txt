@@ -10,3 +10,5 @@ whatsapp.info
 whatsapp.org
 whatsapp.tv
 whatsappbrand.com
+amazonaws.com
+facebook.com
