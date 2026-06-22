@@ -43,8 +43,9 @@ def get_group_name(path: Path) -> str:
 
 
 def build_domain_groups() -> list[str]:
-    """Создаёт команды RouterOS для доменных групп."""
+    """Создаёт DNS-группы, исключая дубликаты между файлами."""
     lines = []
+    seen_domains = {}
 
     if not DOMAINS_DIR.exists():
         return lines
@@ -59,7 +60,7 @@ def build_domain_groups() -> list[str]:
         comment = f"github:{group}"
         address_list = f"{ADDRESS_LIST_PREFIX}-{group}"
 
-        # Удаляем старые DNS-записи этой группы
+        # Удаляем прежние записи группы
         lines.append(
             f'/ip dns static remove [find where comment="{comment}"]'
         )
@@ -69,6 +70,15 @@ def build_domain_groups() -> list[str]:
                 raise ValueError(
                     f"Некорректный домен в файле {path}: {domain}"
                 )
+
+            if domain in seen_domains:
+                print(
+                    f"Duplicate skipped: {domain} from {path.name}; "
+                    f"already present in {seen_domains[domain]}"
+                )
+                continue
+
+            seen_domains[domain] = path.name
 
             lines.append(
                 "/ip dns static add "
@@ -82,7 +92,6 @@ def build_domain_groups() -> list[str]:
         lines.append("")
 
     return lines
-
 
 def normalize_ipv4(value: str, path: Path) -> str:
     """Проверяет и нормализует IPv4-адрес или подсеть."""
