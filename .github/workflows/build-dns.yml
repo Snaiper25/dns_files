@@ -1,19 +1,22 @@
-name: Build MikroTik DNS script
+name: Generate MikroTik lists
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'domains/**'
-      - 'scripts/generate_dns.py'
-      - 'scripts/generate_dns2.py'
-      - '.github/workflows/build-dns.yml'
+      - "domains/**"
+      - "networks/**"
+      - "scripts/generate_dns.py"
+      - ".github/workflows/build-dns.yml"
+
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,15 +26,21 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.12"
 
-      - name: Generate dns-auto2.rsc
-        run: python scripts/generate_dns2.py
+      - name: Generate RouterOS file
+        run: python scripts/generate_dns.py
 
       - name: Commit generated file
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated/dns-auto2.rsc
-          git diff --cached --quiet || git commit -m "Auto-generate dns-auto2.rsc"
+          git add generated/dns-auto.rsc
+
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+
+          git commit -m "Auto-generate MikroTik lists"
           git push
