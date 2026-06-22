@@ -8,6 +8,8 @@ DOMAINS_DIR = BASE / "domains"
 NETWORKS_DIR = BASE / "networks"
 OUT = BASE / "generated" / "dns-auto.rsc"
 
+ADDRESS_LIST_PREFIX = "to-vpn"
+
 # Старый regex.txt пока не обрабатываем
 IGNORED_DOMAIN_FILES = {"regex.txt"}
 
@@ -41,6 +43,7 @@ def get_group_name(path: Path) -> str:
 
 
 def build_domain_groups() -> list[str]:
+    """Создаёт команды RouterOS для доменных групп."""
     lines = []
 
     if not DOMAINS_DIR.exists():
@@ -54,10 +57,9 @@ def build_domain_groups() -> list[str]:
         domains = read_lines(path)
 
         comment = f"github:{group}"
-        address_list = f"to-mihomo-{group}"
+        address_list = f"{ADDRESS_LIST_PREFIX}-{group}"
 
-        # Удаляем предыдущую версию группы.
-        # Это выполняется даже для пустого файла, чтобы очистить старые записи.
+        # Удаляем старые DNS-записи этой группы
         lines.append(
             f'/ip dns static remove [find where comment="{comment}"]'
         )
@@ -65,14 +67,14 @@ def build_domain_groups() -> list[str]:
         for domain in domains:
             if any(char in domain for char in ['"', " ", "|"]):
                 raise ValueError(
-                    f"Некорректный домен в {path}: {domain}"
+                    f"Некорректный домен в файле {path}: {domain}"
                 )
 
             lines.append(
-                f"/ip dns static add "
+                "/ip dns static add "
                 f'name="{domain}" '
-                f"type=FWD "
-                f"match-subdomain=yes "
+                "type=FWD "
+                "match-subdomain=yes "
                 f"address-list={address_list} "
                 f'comment="{comment}"'
             )
@@ -88,15 +90,15 @@ def normalize_ipv4(value: str, path: Path) -> str:
         network = ip_network(value, strict=False)
     except ValueError as error:
         raise ValueError(
-            f"Некорректный IP или CIDR в {path}: {value}"
+            f"Некорректный IP-адрес или CIDR в файле {path}: {value}"
         ) from error
 
     if network.version != 4:
         raise ValueError(
-            f"IPv6 пока не поддерживается в {path}: {value}"
+            f"IPv6 пока не поддерживается в файле {path}: {value}"
         )
 
-    # Одиночный адрес оставляем без /32
+    # Одиночный IP оставляем без /32
     if network.prefixlen == 32:
         return str(network.network_address)
 
@@ -104,6 +106,7 @@ def normalize_ipv4(value: str, path: Path) -> str:
 
 
 def build_network_groups() -> list[str]:
+    """Создаёт команды RouterOS для статических IP и подсетей."""
     lines = []
 
     if not NETWORKS_DIR.exists():
@@ -114,9 +117,9 @@ def build_network_groups() -> list[str]:
         addresses = read_lines(path)
 
         comment = f"github:network:{group}"
-        address_list = f"to-mihomo-{group}"
+        address_list = f"{ADDRESS_LIST_PREFIX}-{group}"
 
-        # Удаляем только записи, созданные этим генератором
+        # Удаляем старые записи этой группы
         lines.append(
             "/ip firewall address-list remove "
             f'[find where comment="{comment}"]'
