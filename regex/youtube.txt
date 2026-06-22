@@ -1,0 +1,2 @@
+github:youtube-regex|to-mihomo-youtube|(^|.*\.)googlevideo\.com$
+github:gpt-regex|to-mihomo-gpt|(^|.*\.)oaistatic\.com$
