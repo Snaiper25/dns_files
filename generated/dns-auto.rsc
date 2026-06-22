@@ -76,7 +76,6 @@
 /ip dns static add name="disneyplus.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
 /ip dns static add name="dssott.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
 /ip dns static add name="ggpht.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
-/ip dns static add name="googleusercontent.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
 /ip dns static add name="googlevideo.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
 /ip dns static add name="gvt1.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
 /ip dns static add name="gvt2.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
