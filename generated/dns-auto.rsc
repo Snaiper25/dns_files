@@ -59,6 +59,7 @@
 /ip dns static add name="signal.org" type=FWD match-subdomain=yes address-list=to-vpn-vpn comment="github:vpn"
 
 /ip dns static remove [find where comment="github:whatsapp"]
+/ip dns static add name="amazonaws.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="wa.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp-plus.info" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp-plus.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
