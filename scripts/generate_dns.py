@@ -1,71 +1,137 @@
+from ipaddress import ip_network
 from pathlib import Path
+import re
+
 
 BASE = Path(".")
 DOMAINS_DIR = BASE / "domains"
+NETWORKS_DIR = BASE / "networks"
 OUT = BASE / "generated" / "dns-auto.rsc"
 
-GROUPS = [
-    ("gpt.txt", "github:gpt", "to-mihomo-gpt"),
-    ("youtube.txt", "github:youtube", "to-mihomo-youtube"),
-    ("telegram.txt", "github:telegram", "to-mihomo-telegram"),
-    ("whatsapp.txt", "github:whatsapp", "to-mihomo-whatsapp"),
-]
-
-REGEX_FILE = DOMAINS_DIR / "regex.txt"
+# Старый regex.txt пока не обрабатываем
+IGNORED_DOMAIN_FILES = {"regex.txt"}
 
 
-def read_lines(path: Path):
-    if not path.exists():
-        return []
-    result = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip().lower()
-        if not line or line.startswith("#"):
+def read_lines(path: Path) -> list[str]:
+    """Читает непустые уникальные строки без комментариев."""
+    result = set()
+
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        value = raw.strip().lower()
+
+        if not value or value.startswith("#"):
             continue
-        result.append(line)
-    return sorted(set(result))
+
+        result.add(value)
+
+    return sorted(result)
 
 
-def build_normal_group(filename, comment, address_list):
-    domains = read_lines(DOMAINS_DIR / filename)
-    lines = [f'/ip dns static remove [find where comment="{comment}"]']
-    for d in domains:
-        lines.append(
-            f'/ip dns static add name={d} type=FWD match-subdomain=yes '
-            f'address-list={address_list} comment="{comment}"'
+def get_group_name(path: Path) -> str:
+    """Получает название группы из имени файла."""
+    group = path.stem.lower()
+
+    if not re.fullmatch(r"[a-z0-9_-]+", group):
+        raise ValueError(
+            f"Недопустимое имя файла: {path.name}. "
+            "Используйте латинские буквы, цифры, дефис или подчёркивание."
         )
-    lines.append("")
+
+    return group
+
+
+def build_domain_groups() -> list[str]:
+    lines = []
+
+    if not DOMAINS_DIR.exists():
+        return lines
+
+    for path in sorted(DOMAINS_DIR.glob("*.txt")):
+        if path.name.lower() in IGNORED_DOMAIN_FILES:
+            continue
+
+        group = get_group_name(path)
+        domains = read_lines(path)
+
+        comment = f"github:{group}"
+        address_list = f"to-mihomo-{group}"
+
+        # Удаляем предыдущую версию группы.
+        # Это выполняется даже для пустого файла, чтобы очистить старые записи.
+        lines.append(
+            f'/ip dns static remove [find where comment="{comment}"]'
+        )
+
+        for domain in domains:
+            if any(char in domain for char in ['"', " ", "|"]):
+                raise ValueError(
+                    f"Некорректный домен в {path}: {domain}"
+                )
+
+            lines.append(
+                f"/ip dns static add "
+                f'name="{domain}" '
+                f"type=FWD "
+                f"match-subdomain=yes "
+                f"address-list={address_list} "
+                f'comment="{comment}"'
+            )
+
+        lines.append("")
+
     return lines
 
 
-def build_regex_group():
-    lines = []
-    if not REGEX_FILE.exists():
-        return lines
+def normalize_ipv4(value: str, path: Path) -> str:
+    """Проверяет и нормализует IPv4-адрес или подсеть."""
+    try:
+        network = ip_network(value, strict=False)
+    except ValueError as error:
+        raise ValueError(
+            f"Некорректный IP или CIDR в {path}: {value}"
+        ) from error
 
-    regex_entries = []
-    for raw in REGEX_FILE.read_text(encoding="utf-8").splitlines():
-        raw = raw.strip()
-        if not raw or raw.startswith("#"):
-            continue
-        parts = raw.split("|", 2)
-        if len(parts) != 3:
-            continue
-        comment, address_list, pattern = parts
-        regex_entries.append((comment.strip(), address_list.strip(), pattern.strip()))
-
-    comments = sorted(set(x[0] for x in regex_entries))
-    for comment in comments:
-        lines.append(f'/ip dns static remove [find where comment="{comment}"]')
-
-    for comment, address_list, pattern in regex_entries:
-        safe_pattern = pattern.replace("\\", "\\\\").replace('"', '\\"')
-        lines.append(
-            f'/ip dns static add regexp="{safe_pattern}" type=FWD '
-            f'address-list={address_list} comment="{comment}"'
+    if network.version != 4:
+        raise ValueError(
+            f"IPv6 пока не поддерживается в {path}: {value}"
         )
 
-    if regex_entries:
+    # Одиночный адрес оставляем без /32
+    if network.prefixlen == 32:
+        return str(network.network_address)
+
+    return str(network)
+
+
+def build_network_groups() -> list[str]:
+    lines = []
+
+    if not NETWORKS_DIR.exists():
+        return lines
+
+    for path in sorted(NETWORKS_DIR.glob("*.txt")):
+        group = get_group_name(path)
+        addresses = read_lines(path)
+
+        comment = f"github:network:{group}"
+        address_list = f"to-mihomo-{group}"
+
+        # Удаляем только записи, созданные этим генератором
+        lines.append(
+            "/ip firewall address-list remove "
+            f'[find where comment="{comment}"]'
+        )
+
+        for value in addresses:
+            address = normalize_ipv4(value, path)
+
+            lines.append(
+                "/ip firewall address-list add "
+                f"list={address_list} "
+                f"address={address} "
+                f'comment="{comment}"'
+            )
+
         lines.append("")
 
     return lines
@@ -75,16 +141,26 @@ def main():
     OUT.parent.mkdir(parents=True, exist_ok=True)
 
     lines = [
-        "# auto-generated",
+        "# auto-generated; do not edit manually",
+        "",
+        "# DNS domain groups",
         "",
     ]
 
-    for filename, comment, address_list in GROUPS:
-        lines.extend(build_normal_group(filename, comment, address_list))
+    lines.extend(build_domain_groups())
 
-    lines.extend(build_regex_group())
+    lines.extend([
+        "# Static IP and network groups",
+        "",
+    ])
 
-    OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    lines.extend(build_network_groups())
+
+    OUT.write_text(
+        "\n".join(lines).rstrip() + "\n",
+        encoding="utf-8",
+    )
+
     print(f"Generated {OUT}")
 
 
