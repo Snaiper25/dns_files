@@ -16,19 +16,6 @@
 /ip dns static add name="perplexity.ai" type=FWD match-subdomain=yes address-list=to-vpn-gpt comment="github:gpt"
 /ip dns static add name="poe.com" type=FWD match-subdomain=yes address-list=to-vpn-gpt comment="github:gpt"
 
-/ip dns static remove [find where comment="github:social"]
-/ip dns static add name="bytecdn.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="cdninstagram.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="facebook.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="fbcdn.net" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="ibyteimg.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="instagram.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="tiktok.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="tiktokcdn.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="twimg.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="twitter.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-/ip dns static add name="x.com" type=FWD match-subdomain=yes address-list=to-vpn-social comment="github:social"
-
 /ip dns static remove [find where comment="github:telegram"]
 /ip dns static add name="cdn-telegram.org" type=FWD match-subdomain=yes address-list=to-vpn-telegram comment="github:telegram"
 /ip dns static add name="comments.app" type=FWD match-subdomain=yes address-list=to-vpn-telegram comment="github:telegram"
@@ -60,6 +47,16 @@
 
 /ip dns static remove [find where comment="github:whatsapp"]
 /ip dns static add name="amazonaws.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="bytecdn.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="cdninstagram.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="facebook.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="fbcdn.net" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="ibyteimg.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="instagram.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="tiktok.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="tiktokcdn.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="twimg.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="twitter.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="wa.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp-plus.info" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp-plus.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
@@ -72,6 +69,7 @@
 /ip dns static add name="whatsapp.tv" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsappbrand.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="wl.co" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="x.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 
 /ip dns static remove [find where comment="github:youtube"]
 /ip dns static add name="disneyplus.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
