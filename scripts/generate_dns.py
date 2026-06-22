@@ -19,7 +19,7 @@ def read_lines(path: Path) -> list[str]:
     result = set()
 
     for raw in path.read_text(encoding="utf-8").splitlines():
-        value = raw.strip().lower()
+        value = raw.split("#", 1)[0].strip().lower()
 
         if not value or value.startswith("#"):
             continue
