@@ -59,8 +59,18 @@
 /ip dns static add name="signal.org" type=FWD match-subdomain=yes address-list=to-vpn-vpn comment="github:vpn"
 
 /ip dns static remove [find where comment="github:whatsapp"]
+/ip dns static add name="wa.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp-plus.info" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp-plus.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp-plus.net" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp.cc" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp.info" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 /ip dns static add name="whatsapp.net" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp.org" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsapp.tv" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="whatsappbrand.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
+/ip dns static add name="wl.co" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:whatsapp"
 
 /ip dns static remove [find where comment="github:youtube"]
 /ip dns static add name="disneyplus.com" type=FWD match-subdomain=yes address-list=to-vpn-youtube comment="github:youtube"
