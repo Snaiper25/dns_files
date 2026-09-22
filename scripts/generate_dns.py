@@ -1,179 +1,183 @@
-from ipaddress import ip_network
-from pathlib import Path
+from __future__ import annotations
+
+import argparse
+import ipaddress
+import json
 import re
+import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+DOMAINS_DIR = ROOT / "domains"
+NETWORKS_DIR = ROOT / "networks"
+UPSTREAM_DIR = ROOT / "upstream"
+SOURCES_FILE = ROOT / "sources.json"
+OUTPUT_FILE = ROOT / "generated" / "dns-auto.rsc"
+RAW_V2FLY = "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/{name}"
+LIST_PREFIX = "to-vpn"
+DOMAIN_RE = re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
 
 
-BASE = Path(".")
-DOMAINS_DIR = BASE / "domains"
-NETWORKS_DIR = BASE / "networks"
-OUT = BASE / "generated" / "dns-auto.rsc"
-
-ADDRESS_LIST_PREFIX = "to-vpn"
-
-# Старый regex.txt пока не обрабатываем
-IGNORED_DOMAIN_FILES = {"regex.txt"}
-
-
-def read_lines(path: Path) -> list[str]:
-    """Читает непустые уникальные строки без комментариев."""
-    result = set()
-
+def read_values(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    values: set[str] = set()
     for raw in path.read_text(encoding="utf-8").splitlines():
         value = raw.split("#", 1)[0].strip().lower()
+        if value:
+            values.add(value)
+    return values
 
-        if not value or value.startswith("#"):
+
+def validate_group(group: str) -> None:
+    if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", group):
+        raise ValueError(f"Invalid group name: {group}")
+
+
+def normalize_domain(value: str) -> str | None:
+    value = value.strip().lower().rstrip(".")
+    for prefix in ("domain:", "full:"):
+        if value.startswith(prefix):
+            value = value[len(prefix):]
+            break
+    if value.startswith(("regexp:", "keyword:")):
+        return None
+    value = value.split()[0]
+    return value if DOMAIN_RE.fullmatch(value) else None
+
+
+def fetch_v2fly_list(name: str, cache: dict[str, set[str]]) -> set[str]:
+    if name in cache:
+        return cache[name]
+    request = urllib.request.Request(
+        RAW_V2FLY.format(name=name), headers={"User-Agent": "dns-files-builder/1"}
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        text = response.read().decode("utf-8")
+    domains: set[str] = set()
+    includes: list[str] = []
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if not line:
             continue
-
-        result.add(value)
-
-    return sorted(result)
-
-
-def get_group_name(path: Path) -> str:
-    """Получает название группы из имени файла."""
-    group = path.stem.lower()
-
-    if not re.fullmatch(r"[a-z0-9_-]+", group):
-        raise ValueError(
-            f"Недопустимое имя файла: {path.name}. "
-            "Используйте латинские буквы, цифры, дефис или подчёркивание."
-        )
-
-    return group
-
-
-def build_domain_groups() -> list[str]:
-    """Создаёт DNS-группы, исключая дубликаты между файлами."""
-    lines = []
-    seen_domains = {}
-
-    if not DOMAINS_DIR.exists():
-        return lines
-
-    for path in sorted(DOMAINS_DIR.glob("*.txt")):
-        if path.name.lower() in IGNORED_DOMAIN_FILES:
+        if line.startswith("include:"):
+            includes.append(line.split()[0].split(":", 1)[1])
             continue
+        domain = normalize_domain(line)
+        if domain:
+            domains.add(domain)
+    cache[name] = domains
+    for include in includes:
+        domains.update(fetch_v2fly_list(include, cache))
+    return domains
 
-        group = get_group_name(path)
-        domains = read_lines(path)
 
-        comment = f"github:{group}"
-        address_list = f"{ADDRESS_LIST_PREFIX}-{group}"
-
-        # Удаляем прежние записи группы
-        lines.append(
-            f'/ip dns static remove [find where comment="{comment}"]'
+def update_upstream(sources: dict[str, list[str]]) -> None:
+    UPSTREAM_DIR.mkdir(parents=True, exist_ok=True)
+    cache: dict[str, set[str]] = {}
+    for group, source_names in sorted(sources.items()):
+        validate_group(group)
+        domains: set[str] = set()
+        for source_name in source_names:
+            domains.update(fetch_v2fly_list(source_name, cache))
+        (UPSTREAM_DIR / f"{group}.txt").write_text(
+            "\n".join(sorted(domains)) + "\n", encoding="utf-8"
         )
+        print(f"Updated upstream/{group}.txt: {len(domains)} domains")
 
-        for domain in domains:
-            if any(char in domain for char in ['"', " ", "|"]):
-                raise ValueError(
-                    f"Некорректный домен в файле {path}: {domain}"
-                )
 
-            if domain in seen_domains:
-                print(
-                    f"Duplicate skipped: {domain} from {path.name}; "
-                    f"already present in {seen_domains[domain]}"
-                )
-                continue
+def load_domain_groups(sources: dict[str, list[str]]) -> dict[str, set[str]]:
+    groups: dict[str, set[str]] = {}
+    names = set(sources) | {path.stem for path in DOMAINS_DIR.glob("*.txt")}
+    for group in sorted(names):
+        validate_group(group)
+        domains = read_values(DOMAINS_DIR / f"{group}.txt")
+        domains.update(read_values(UPSTREAM_DIR / f"{group}.txt"))
+        invalid = sorted(value for value in domains if not DOMAIN_RE.fullmatch(value))
+        if invalid:
+            raise ValueError(f"Invalid domains in {group}: {invalid[:5]}")
+        if not domains:
+            raise ValueError(f"Domain group is empty: {group}")
+        groups[group] = domains
+    return groups
 
-            seen_domains[domain] = path.name
 
-            lines.append(
-                "/ip dns static add "
-                f'name="{domain}" '
-                "type=FWD "
-                "match-subdomain=yes "
-                f"address-list={address_list} "
-                f'comment="{comment}"'
-            )
-
-        lines.append("")
-
-    return lines
-
-def normalize_ipv4(value: str, path: Path) -> str:
-    """Проверяет и нормализует IPv4-адрес или подсеть."""
+def normalize_network(value: str, source: Path) -> str:
     try:
-        network = ip_network(value, strict=False)
+        network = ipaddress.ip_network(value, strict=False)
     except ValueError as error:
-        raise ValueError(
-            f"Некорректный IP-адрес или CIDR в файле {path}: {value}"
-        ) from error
-
+        raise ValueError(f"Invalid network in {source}: {value}") from error
     if network.version != 4:
-        raise ValueError(
-            f"IPv6 пока не поддерживается в файле {path}: {value}"
-        )
-
-    # Одиночный IP оставляем без /32
-    if network.prefixlen == 32:
-        return str(network.network_address)
-
-    return str(network)
+        raise ValueError(f"IPv6 is not supported in {source}: {value}")
+    if network.is_private or network.is_loopback or network.is_link_local:
+        raise ValueError(f"Private/reserved network is forbidden in {source}: {value}")
+    if network.prefixlen < 16:
+        raise ValueError(f"Network is too broad in {source}: {value}")
+    return str(network.network_address) if network.prefixlen == 32 else str(network)
 
 
-def build_network_groups() -> list[str]:
-    """Создаёт команды RouterOS для статических IP и подсетей."""
-    lines = []
-
-    if not NETWORKS_DIR.exists():
-        return lines
-
+def load_network_groups() -> dict[str, set[str]]:
+    groups: dict[str, set[str]] = {}
     for path in sorted(NETWORKS_DIR.glob("*.txt")):
-        group = get_group_name(path)
-        addresses = read_lines(path)
-
-        comment = f"github:network:{group}"
-        address_list = f"{ADDRESS_LIST_PREFIX}-{group}"
-
-        # Удаляем старые записи этой группы
-        lines.append(
-            "/ip firewall address-list remove "
-            f'[find where comment="{comment}"]'
-        )
-
-        for value in addresses:
-            address = normalize_ipv4(value, path)
-
-            lines.append(
-                "/ip firewall address-list add "
-                f"list={address_list} "
-                f"address={address} "
-                f'comment="{comment}"'
-            )
-
-        lines.append("")
-
-    return lines
+        validate_group(path.stem)
+        values = {normalize_network(value, path) for value in read_values(path)}
+        if values:
+            groups[path.stem] = values
+    return groups
 
 
-def main():
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-
+def render(groups: dict[str, set[str]], networks: dict[str, set[str]]) -> str:
     lines = [
-        "# auto-generated; do not edit manually",
+        "# dns-files generated-v2; do not edit manually",
+        f"# domain-groups={len(groups)} network-groups={len(networks)}",
         "",
-        "# DNS domain groups",
+        "# Remove entries generated by the legacy repository format.",
+        '/ip dns static remove [find where comment~"^github:"]',
+        '/ip firewall address-list remove [find where comment~"^github:network:"]',
         "",
     ]
+    for group, domains in sorted(groups.items()):
+        comment = f"github:dns-files:{group}"
+        address_list = f"{LIST_PREFIX}-{group}"
+        lines.extend([
+            f"# group={group} domains={len(domains)}",
+            f'/ip dns static remove [find where comment="{comment}"]',
+        ])
+        for domain in sorted(domains):
+            lines.append(
+                f'/ip dns static add name="{domain}" type=FWD match-subdomain=yes '
+                f'address-list={address_list} comment="{comment}"'
+            )
+        lines.append("")
+    for group, values in sorted(networks.items()):
+        comment = f"github:dns-files:network:{group}"
+        address_list = f"{LIST_PREFIX}-{group}"
+        lines.extend([
+            f"# network-group={group} entries={len(values)}",
+            f'/ip firewall address-list remove [find where comment="{comment}"]',
+        ])
+        for value in sorted(values):
+            lines.append(
+                f'/ip firewall address-list add list={address_list} address={value} '
+                f'comment="{comment}"'
+            )
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
 
-    lines.extend(build_domain_groups())
 
-    lines.extend([
-        "# Static IP and network groups",
-        "",
-    ])
-
-    lines.extend(build_network_groups())
-
-    OUT.write_text(
-        "\n".join(lines).rstrip() + "\n",
-        encoding="utf-8",
-    )
-
-    print(f"Generated {OUT}")
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--update-upstream", action="store_true")
+    args = parser.parse_args()
+    sources = json.loads(SOURCES_FILE.read_text(encoding="utf-8"))
+    if args.update_upstream:
+        update_upstream(sources)
+    groups = load_domain_groups(sources)
+    networks = load_network_groups()
+    output = render(groups, networks)
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_FILE.write_text(output, encoding="utf-8")
+    print(f"Generated {OUTPUT_FILE}: {len(output)} bytes")
 
 
 if __name__ == "__main__":

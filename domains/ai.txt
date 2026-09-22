@@ -1,0 +1,5 @@
+# Local AI additions not supplied by V2Fly.
+auth0.openai.com
+chatgpt.com
+oaistatic.com
+oaiusercontent.com

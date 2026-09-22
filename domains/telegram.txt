@@ -1,19 +1,8 @@
-telegram.org
-telegram.me
-t.me
-tdesktop.com
-telegra.ph
-
-telegram-cdn.org
-cdn-telegram.org
-
-telegram.space
+# Telegram ecosystem additions.
 comments.app
-contest.com
-quiz.directory
-
 fragment.com
-ton.org
 getgems.io
+telegram-cdn.org
+ton.org
 tonkeeper.com
 wallet.tg

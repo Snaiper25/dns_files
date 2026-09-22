@@ -1,0 +1,1 @@
+# Add only provider-published Telegram IPv4 CIDRs here when required.

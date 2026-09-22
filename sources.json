@@ -1,0 +1,7 @@
+{
+  "ai": ["openai", "anthropic", "perplexity"],
+  "instagram": ["instagram"],
+  "telegram": ["telegram"],
+  "whatsapp": ["whatsapp"],
+  "youtube": ["youtube"]
+}

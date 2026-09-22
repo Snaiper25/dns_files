@@ -1,46 +1,55 @@
-name: Generate MikroTik lists
+name: Build MikroTik VPN lists
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "domains/**"
       - "networks/**"
-      - "scripts/generate_dns.py"
+      - "scripts/**"
+      - "tests/**"
+      - "sources.json"
       - ".github/workflows/build-dns.yml"
-
+  schedule:
+    - cron: "17 3 * * 1"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: build-mikrotik-lists
+  cancel-in-progress: false
+
 jobs:
   generate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Generate RouterOS file
-        run: python scripts/generate_dns.py
+      - name: Download selected upstream lists
+        run: python scripts/generate_dns.py --update-upstream
 
-      - name: Commit generated file
+      - name: Run validation tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Verify generated RouterOS file
+        run: |
+          test -s generated/dns-auto.rsc
+          grep -q "dns-files generated-v2" generated/dns-auto.rsc
+          test "$(wc -c < generated/dns-auto.rsc)" -lt 2000000
+
+      - name: Commit changed snapshots and output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated/dns-auto.rsc
-
+          git add upstream generated/dns-auto.rsc
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No upstream changes"
             exit 0
           fi
-
-          git commit -m "Auto-generate MikroTik lists"
+          git commit -m "chore: refresh MikroTik VPN lists"
           git push
