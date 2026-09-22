@@ -22,6 +22,11 @@ class GeneratorTests(unittest.TestCase):
         output = MODULE.render(groups, MODULE.load_network_groups())
         for group in ("ai", "instagram", "sites", "telegram", "whatsapp", "youtube"):
             self.assertIn(f"address-list=to-vpn-{group}", output)
+            self.assertIn(
+                f'list=to-vpn-{group} address=127.0.0.1 '
+                f'comment="github:dns-files:anchor:{group}"',
+                output,
+            )
 
     def test_dangerously_broad_domains_are_absent(self):
         sources = json.loads(MODULE.SOURCES_FILE.read_text())
