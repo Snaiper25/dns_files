@@ -46,6 +46,11 @@ class GeneratorTests(unittest.TestCase):
         self.assertIn("91.108.4.0/22", networks["telegram"])
         self.assertIn("149.154.160.0/20", networks["telegram"])
         output = MODULE.render({}, networks)
+        self.assertIn(
+            "/ip firewall address-list remove "
+            "[find where list=to-vpn-telegram and address=91.108.4.0/22]",
+            output,
+        )
         self.assertIn("list=to-vpn-telegram address=91.108.4.0/22", output)
         self.assertIn('comment="github:dns-files:network:telegram"', output)
 

@@ -363,12 +363,21 @@
 
 # network-group=telegram entries=9
 /ip firewall address-list remove [find where comment="github:dns-files:network:telegram"]
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=149.154.160.0/20]
 /ip firewall address-list add list=to-vpn-telegram address=149.154.160.0/20 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=185.76.151.0/24]
 /ip firewall address-list add list=to-vpn-telegram address=185.76.151.0/24 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.105.192.0/23]
 /ip firewall address-list add list=to-vpn-telegram address=91.105.192.0/23 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.12.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.12.0/22 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.16.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.16.0/22 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.20.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.20.0/22 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.4.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.4.0/22 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.56.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.56.0/22 comment="github:dns-files:network:telegram"
+/ip firewall address-list remove [find where list=to-vpn-telegram and address=91.108.8.0/22]
 /ip firewall address-list add list=to-vpn-telegram address=91.108.8.0/22 comment="github:dns-files:network:telegram"
