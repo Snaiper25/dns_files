@@ -1,0 +1,2 @@
+# WhatsApp does not publish dedicated IPv4 CIDRs separate from shared Meta/CDN
+# infrastructure. Service IPs are learned dynamically from WhatsApp DNS rules.

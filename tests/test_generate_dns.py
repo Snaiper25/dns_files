@@ -41,6 +41,13 @@ class GeneratorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             MODULE.normalize_network("8.0.0.0/8", Path("test"))
 
+    def test_telegram_networks_are_rendered(self):
+        networks = MODULE.load_network_groups()
+        self.assertIn("91.108.4.0/22", networks["telegram"])
+        self.assertIn("149.154.160.0/20", networks["telegram"])
+        output = MODULE.render({}, networks)
+        self.assertIn("list=to-vpn-telegram address=91.108.4.0/22", output)
+        self.assertIn('comment="github:dns-files:network:telegram"', output)
 
 if __name__ == "__main__":
     unittest.main()

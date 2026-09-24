@@ -1,0 +1,2 @@
+# Instagram does not publish dedicated IPv4 CIDRs separate from shared Meta/CDN
+# infrastructure. Service IPs are learned dynamically from Instagram DNS rules.
