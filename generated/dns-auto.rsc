@@ -6,7 +6,7 @@
 /ip firewall address-list remove [find where comment~"^github:network:"]
 /ip firewall address-list remove [find where comment~"^github:dns-files:anchor:"]
 
-# group=ai domains=36
+# group=ai domains=37
 /ip dns static remove [find where comment="github:dns-files:ai"]
 /ip firewall address-list add list=to-vpn-ai address=127.0.0.1 comment="github:dns-files:anchor:ai"
 /ip dns static add name="anthropic.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
@@ -19,6 +19,7 @@
 /ip dns static add name="clau.de" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="claude.ai" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="claude.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
+/ip dns static add name="claude.dev" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="claudemcpclient.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="claudemcpcontent.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="claudeusercontent.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
