@@ -164,11 +164,9 @@
 /ip dns static add name="usercontent.dev" type=FWD match-subdomain=yes address-list=to-vpn-telegram comment="github:dns-files:telegram"
 /ip dns static add name="wallet.tg" type=FWD match-subdomain=yes address-list=to-vpn-telegram comment="github:dns-files:telegram"
 
-# group=whatsapp domains=13
+# group=whatsapp domains=11
 /ip dns static remove [find where comment="github:dns-files:whatsapp"]
 /ip firewall address-list add list=to-vpn-whatsapp address=127.0.0.1 comment="github:dns-files:anchor:whatsapp"
-/ip dns static add name="graph.whatsapp.com" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:dns-files:whatsapp"
-/ip dns static add name="graph.whatsapp.net" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:dns-files:whatsapp"
 /ip dns static add name="wa.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:dns-files:whatsapp"
 /ip dns static add name="whatsapp-plus.info" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:dns-files:whatsapp"
 /ip dns static add name="whatsapp-plus.me" type=FWD match-subdomain=yes address-list=to-vpn-whatsapp comment="github:dns-files:whatsapp"
