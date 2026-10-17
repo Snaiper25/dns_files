@@ -1,7 +1,9 @@
 # WhatsApp / Meta (AS32934) IPv4 networks.
+# WhatsApp does not publish dedicated IPv4 CIDRs separate from shared Meta/CDN
+# infrastructure, and it connects to Meta IPs without router DNS lookups,
+# so domain-only lists miss most of its connections. Therefore the whole
+# Meta AS32934 IPv4 space is routed (also covers Facebook/Instagram).
 # Source: RIPEstat announced-prefixes AS32934, 2026-10-17 (aggregated).
-# Reason: WhatsApp connects to Meta IPs without router DNS lookups,
-# so domain-only lists miss most of its connections.
 # 57.144.0.0/14 split into /16 (generator rejects networks wider than /16).
 31.13.24.0/21
 31.13.64.0/18

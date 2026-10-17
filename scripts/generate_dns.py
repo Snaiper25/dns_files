@@ -161,6 +161,10 @@ def render(groups: dict[str, set[str]], networks: dict[str, set[str]]) -> str:
         ])
         for value in sorted(values):
             lines.append(
+                f'/ip firewall address-list remove '
+                f'[find where list={address_list} and address={value}]'
+            )
+            lines.append(
                 f'/ip firewall address-list add list={address_list} address={value} '
                 f'comment="{comment}"'
             )
