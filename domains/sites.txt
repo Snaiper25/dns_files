@@ -6,3 +6,15 @@ githubassets.com
 githubusercontent.com
 openvpn.net
 signal.org
+# Blocked in RU (full lists also pulled from V2Fly: discord, twitter, linkedin)
+discord.com
+discord.gg
+discordapp.com
+discordapp.net
+discord.media
+x.com
+twitter.com
+twimg.com
+t.co
+linkedin.com
+licdn.com

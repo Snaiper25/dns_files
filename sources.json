@@ -1,6 +1,7 @@
 {
   "ai": ["openai", "anthropic", "perplexity"],
   "instagram": ["instagram"],
+  "sites": ["discord", "twitter", "linkedin"],
   "telegram": ["telegram"],
   "whatsapp": ["whatsapp"],
   "youtube": ["youtube"]

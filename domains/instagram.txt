@@ -1,2 +1,12 @@
 cdninstagram.com
 instagram.com
+# Meta services used by Instagram (media CDN, Threads, Messenger).
+# facebook.com is intentionally excluded (see tests); Meta traffic is covered by networks/whatsapp.txt
+facebook.net
+fb.com
+fb.me
+fbcdn.net
+fbsbx.com
+messenger.com
+threads.net
+threads.com

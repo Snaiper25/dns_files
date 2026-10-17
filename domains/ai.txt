@@ -1,5 +1,33 @@
 # Local AI additions not supplied by V2Fly.
+# OpenAI
 auth0.openai.com
 chatgpt.com
 oaistatic.com
 oaiusercontent.com
+# Google Gemini / AI Studio / NotebookLM
+gemini.google.com
+bard.google.com
+aistudio.google.com
+makersuite.google.com
+ai.google.dev
+generativelanguage.googleapis.com
+alkalimakersuite-pa.clients6.google.com
+notebooklm.google
+notebooklm.google.com
+# xAI Grok
+grok.com
+x.ai
+# Microsoft Copilot
+copilot.microsoft.com
+copilot.cloud.microsoft
+sydney.bing.com
+# Other AI services blocked or restricted for RU
+mistral.ai
+meta.ai
+midjourney.com
+suno.com
+suno.ai
+elevenlabs.io
+cursor.com
+cursor.sh
+groq.com
