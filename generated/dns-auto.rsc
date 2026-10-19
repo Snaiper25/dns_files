@@ -6,7 +6,7 @@
 /ip firewall address-list remove [find where comment~"^github:network:"]
 /ip firewall address-list remove [find where comment~"^github:dns-files:anchor:"]
 
-# group=ai domains=60
+# group=ai domains=61
 /ip dns static remove [find where comment="github:dns-files:ai"]
 /ip firewall address-list add list=to-vpn-ai address=127.0.0.1 comment="github:dns-files:anchor:ai"
 /ip dns static add name="ai.google.dev" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
@@ -50,6 +50,7 @@
 /ip dns static add name="oaiusercontent.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="openai.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="openai.com.cdn.cloudflare.net" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
+/ip dns static add name="openai.org" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="openai.qualtrics.com" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="openaiapi-site.azureedge.net" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
 /ip dns static add name="openaiassets.blob.core.windows.net" type=FWD match-subdomain=yes address-list=to-vpn-ai comment="github:dns-files:ai"
